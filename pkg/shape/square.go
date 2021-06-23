@@ -53,3 +53,7 @@ func (s *square) Move() {
 	s.position.X = math.Mod(s.position.X, s.maxX)
 	s.position.Y = math.Mod(s.position.Y, s.maxY)
 }
+
+func (s *square) Head(directrion topology.Direction) {
+	s.direction = directrion
+}
