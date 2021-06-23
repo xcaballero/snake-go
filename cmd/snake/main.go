@@ -1,12 +1,13 @@
 package main
 
 import (
-	"math"
 	"time"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
 	"github.com/faiface/pixel/pixelgl"
+	"github.com/xcaballero/snake-go/pkg/shape"
+	"github.com/xcaballero/snake-go/pkg/topology"
 	"golang.org/x/image/colornames"
 )
 
@@ -32,7 +33,7 @@ func run() {
 		panic(err)
 	}
 
-	square := NewSquare(&Vector{X: (maxX - minX) / 2, Y: (maxY - minY) / 2})
+	square := shape.NewSquare(&topology.Vector{X: (maxX - minX) / 2, Y: (maxY - minY) / 2}, squareSize, maxX, maxY)
 	for !win.Closed() {
 		win.Clear(colornames.Black)
 		imd := imdraw.New(nil)
@@ -42,59 +43,4 @@ func run() {
 		square.Move()
 		time.Sleep(1 * time.Second)
 	}
-}
-
-type Vector struct {
-	X float64
-	Y float64
-}
-
-type Direction int
-
-const (
-	North Direction = iota
-	East
-	South
-	West
-)
-
-type Square struct {
-	position  Vector
-	direction Direction
-	size      float64
-}
-
-func NewSquare(center *Vector) *Square {
-	return &Square{
-		position:  *center,
-		direction: East,
-		size:      squareSize,
-	}
-}
-
-func (s *Square) Draw(imd *imdraw.IMDraw) {
-	imd.Color = pixel.RGB(0, 1, 0)
-	imd.Push(pixel.V(s.position.X-s.size, s.position.Y-s.size))
-	imd.Color = pixel.RGB(0, 1, 0)
-	imd.Push(pixel.V(s.position.X-s.size, s.position.Y+s.size))
-	imd.Color = pixel.RGB(0, 1, 0)
-	imd.Push(pixel.V(s.position.X+s.size, s.position.Y+s.size))
-	imd.Color = pixel.RGB(0, 1, 0)
-	imd.Push(pixel.V(s.position.X+s.size, s.position.Y-s.size))
-	imd.Polygon(0)
-}
-
-func (s *Square) Move() {
-	switch s.direction {
-	case North:
-		s.position.Y += 2 * s.size
-	case East:
-		s.position.X += 2 * s.size
-	case South:
-		s.position.Y -= 2 * s.size
-	case West:
-		s.position.X -= 2 * s.size
-	}
-	s.position.X = math.Mod(s.position.X, maxX)
-	s.position.Y = math.Mod(s.position.Y, maxY)
 }
